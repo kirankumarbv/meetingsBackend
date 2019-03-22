@@ -1,0 +1,177 @@
+---
+test_name: Create User happy path
+stages:
+  - name: Clean up old test user
+  #Deletion of user deletes all his associated meetings, recordings etc
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        id: "1"
+        email_id: "Johnnydepp@mail.com"
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 
+        - 200
+        - 400
+
+  - name: Add User should return success
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        name: "Johnny Depp"
+        email_id: "Johnnydepp@mail.com"
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+---
+
+test_name: Make sure invalid arguments are handled for Create User
+stages:
+  - name: Add second User with same email id should return failure
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        name: "John Doe"
+        email_id: "Johnnydepp@mail.com"
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+  - name: Invalid arguements to create user
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        #input parameter name wrong
+        id: "John Doe"
+        email_id: "Johnnydepp@mail.com"
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 422
+---
+
+test_name: Create meetings happy path
+stages:
+  - name: Add Meeting
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      json:
+        host_id: 1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+---
+
+test_name: Make sure invalid arguments are handled for Create Meeting
+stages:
+  - name: Add meeting without request body
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+  - name: Invalid arguments field to create meeting
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      json:
+        #input parameter name wrong
+        id: 1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 422
+
+  - name: Invalid host id to create meeting
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      json:
+        #invalid host id
+        host_id: 2
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: host ID is not a valid host
+---
+
+test_name: Create Recording happy path
+stages:
+  - name: Add Recording
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        meeting_id: 1
+        url: https://www.fuze.s3.amazonaws.com/dummyrecording1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+
+  - name: Create a public recording
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        meeting_id: 1
+        url: https://www.fuze.s3.amazonaws.com/dummyrecording2
+        private: false
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 201
+---
+
+test_name: Check negative cases for create recording
+stages:
+  - name: No input to create Recording
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+  - name : Duplicate url for Recording
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        meeting_id: 1
+        url: https://www.fuze.s3.amazonaws.com/dummyrecording1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Recording already exists
+
+  - name : invalid arguments for Recording
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        id: 1
+        url: https://www.dummy.com
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 422
+---
+
+

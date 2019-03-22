@@ -1,0 +1,49 @@
+---
+test_name: Get recordings given meeting id
+stages:
+  - name: Get recordings from a meeting id
+    request:
+      url: http://127.0.0.1:5000/api/GetRecordingsFromMeeting
+      json:
+        meeting_id: 1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+---
+
+test_name: Invalid test cases for GetRecordingsFromMeeting
+stages:
+  - name: No Input
+    request:
+      url: http://127.0.0.1:5000/api/GetRecordingsFromMeeting
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+  - name: Invalid input field
+    request:
+      url: http://127.0.0.1:5000/api/GetRecordingsFromMeeting
+      json:
+        id: 1
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+  - name: No Input
+    request:
+      url: http://127.0.0.1:5000/api/GetRecordingsFromMeeting
+      json:
+        meeting_id: 3
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input data incorrect or recording does not exist
+---

@@ -1,0 +1,157 @@
+---
+test_name: Invalid arguments to Delete Recording
+stages:
+  - name: Send no input to the api
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+  - name: Send invalid argument field to the api
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        id: 1
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input field incorrect
+
+  - name: Send invalid argument to the api
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        recording_id: 3
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input data incorrect or recording does not exist
+---
+
+test_name: Delete Recording
+stages:
+  - name: Delete Previously created recording
+    request:
+      url: http://127.0.0.1:5000/api/Recording
+      json:
+        recording_id: "1"
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+---
+test_name: Invalid arguments to Delete Meeting
+stages:
+  - name: Send no input to the api
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+  - name: Send invalid argument field to the api
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      json:
+        meeting_id: 1
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input field incorrect
+
+  - name: Send invalid argument to the api
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      json:
+        id: 3
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input data incorrect or meeting does not exist
+---
+
+test_name: Delete Recording
+stages:
+  - name: Delete Previously created recording
+    request:
+      url: http://127.0.0.1:5000/api/Meeting
+      json:
+        id: "1"
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+---
+
+test_name: Invalid arguments to Delete User
+stages:
+  - name: Send no input to the api
+    request:
+      url: http://127.0.0.1:5000/api/User
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+  - name: Send invalid argument field to the api
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        id: 1
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input fields incorrect
+
+  - name: Send invalid argument to the api
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        id: 3
+        email_id: Johnnydepp@mail.com
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input data incorrect or user does not exist
+---
+
+test_name: Delete User Happy path
+stages:
+  - name: Clean up old test user
+  #Deletion of user deletes all his associated meetings, recordings etc
+    request:
+      url: http://127.0.0.1:5000/api/User
+      json:
+        id: "1"
+        email_id: "Johnnydepp@mail.com"
+      method: DELETE
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200

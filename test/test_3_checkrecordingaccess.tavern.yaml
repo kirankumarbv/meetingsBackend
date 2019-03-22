@@ -1,0 +1,51 @@
+---
+test_name: Check if viewer has access to the recording
+stages:
+  - name: Get recordings from a meeting id
+    request:
+      url: http://127.0.0.1:5000/api/CanAccessRecording
+      json:
+        recording_id: 2
+        email_id: viewer@mail.com
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+      body:
+        status: success
+---
+
+test_name: Negative testcases for ShareRecording
+stages:
+  - name: When viewer does not have access to recording
+    request:
+      url: http://127.0.0.1:5000/api/CanAccessRecording
+      json:
+        recording_id: 2
+        email_id: viewer1@mail.com
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        status: failure
+
+  - name: Invalid argument
+    request:
+      url: http://127.0.0.1:5000/api/CanAccessRecording
+      json:
+        rid: 2
+        email_id: viewer1@mail.com
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+      body:
+        message: Input fields incorrect
+---
+
+
+
